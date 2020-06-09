@@ -56,13 +56,13 @@ namespace WebApplication1
             services.AddRazorPages().AddXmlSerializerFormatters();
             services.AddAuthentication().AddGoogle(options =>
             {
-                options.ClientId = "383150158186-rjo8ki6vpovqsr1vhocdhe5acmcosrae.apps.googleusercontent.com";
-                options.ClientSecret = "XinLPaBofMug44jwoPc6vDoc";
+                options.ClientId = "";
+                options.ClientSecret = "";
             })
                 .AddFacebook(options =>
                 {
-                    options.AppId = "203346810761166";
-                    options.AppSecret = "98e918a42cf018e8a399b6414b683544";
+                    options.AppId = "";
+                    options.AppSecret = "";
                 });
             services.AddAuthorization(options =>
             {
