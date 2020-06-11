@@ -126,7 +126,13 @@ namespace WebApplication1.Controllers
             }
             return View();
         }
-
+        [HttpPost]
+        public IActionResult Delete(string id)
+        {
+            int employeeId = Convert.ToInt32(protector.Unprotect(id));
+            _employeeRepository.Delete(employeeId);
+            return RedirectToAction("Index");
+        }
         private string ProcessUploadedFile(EmployeeCreateViewModel model)
         {
             string uniqueFileName = null;

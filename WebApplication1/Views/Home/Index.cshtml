@@ -1,24 +1,57 @@
 ﻿@model IEnumerable<Employee>
-
-@{ 
+@inject SignInManager<ApplicationUser> signInManager;
+@{
     ViewBag.Title = "Employee List";
 }
 
-        <div class = "card-deck">
-            @foreach(var employee in Model)
-            {
-                var photoPath = "~/images/" + (employee.PhotoPath ?? "question.jpg");
+<div class="card-deck">
+    @foreach (var employee in Model)
+    {
+        var photoPath = "~/images/" + (employee.PhotoPath ?? "question.jpg");
 
-                <div class="card m-3" style="min-width:18rem; max-width:30.5%;">
-                    <div class="card-header">
-                        <h3>@employee.Name</h3>
-                    </div>
-                    <img class="card-img-top imageThumbnail" src="@photoPath" asp-append-version="true"/>
-                    <div class="card-footer text-center">
-                        <a asp-controller="home" asp-action="details" asp-route-id="@employee.EncryptedId" class="btn btn-primary m-1">View</a>
+        <div class="card m-3" style="min-width:18rem; max-width:30.5%;">
+            <div class="card-header">
+                <h3>@employee.Name</h3>
+            </div>
+            <img class="card-img-top imageThumbnail" src="@photoPath" asp-append-version="true" />
+            <div class="card-footer text-center">
+                <form method="post" asp-action="Delete" asp-route-id="@employee.EncryptedId">
+                    <a asp-controller="home" asp-action="details" asp-route-id="@employee.EncryptedId" class="btn btn-primary m-1">View</a>
+                    @if (signInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+                    {
                         <a asp-controller="home" asp-action="edit" asp-route-id="@employee.EncryptedId" class="btn btn-primary m-1">Edit</a>
-                        <a href="#" class="btn btn-danger m-1">Delete</a>
-                    </div>
-                </div>
-            }
+                    <span id="confirmDeleteSpan_@employee.Id" style="display:none">
+                        <hr />
+                        <span>Are you sure you want to delete?</span>
+                        <button type="submit" class="btn btn-danger">Yes</button>
+                        <a href="#" class="btn btn-primary"
+                           onclick="confirmDelete('@employee.Id', false)">No</a>
+                    </span>
+
+                    <span id="deleteSpan_@employee.Id">
+                        <a href="#" class="btn btn-danger"
+                           onclick="confirmDelete('@employee.Id', true)">Delete</a>
+                    </span>
+                    }
+                </form>
+            </div>
         </div>
+    }
+</div>
+@section Scripts{
+    <script>
+        function confirmDelete(uniqueId, isDeleteClicked) {
+            var deleteSpan = 'deleteSpan_' + uniqueId;
+            var confirmDeleteSpan = 'confirmDeleteSpan_' + uniqueId;
+
+            if (isDeleteClicked) {
+                $('#' + deleteSpan).hide();
+                $('#' + confirmDeleteSpan).show();
+            } else {
+                $('#' + deleteSpan).show();
+                $('#' + confirmDeleteSpan).hide();
+            }
+        }
+
+    </script>
+}
